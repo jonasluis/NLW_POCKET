@@ -1,4 +1,4 @@
-const { select, input } = require('@inquirer/prompts')//busca informacao do inquirer na pasta prompts que quer a opcao select
+const { select, input, checkbox } = require('@inquirer/prompts')//busca informacao do inquirer na pasta prompts que quer a opcao select
 
 let metas = [ ]
 
@@ -11,6 +11,34 @@ const cadastrarMeta = async () => {
     }
     // envia as informacoes para dentro da variavel metas
     metas.push({value: meta, checked: false}) 
+}
+
+const listarMetas = async () => {
+    const respostas = await checkbox({
+        message: "Use as setas para mudar de meta, o espaco para marcar ou desmacar e o Enter para finalizar essa etapa",
+        choices: [...metas],// ... joga tudo dentro de metas para o novo array
+        instructions: false
+    })
+        
+
+    if(respostas.length == 0) {
+        console.log("Nenhuma meta selecionada")
+        return
+    }
+
+    metas.forEach((m) =>{
+        m.checked = false // desmarca todas as respostas
+    })
+
+            //forEach == para cada resposta 
+    respostas.forEach((resposta) => { // vai marcar todas que ja estavam marcadas retirando apenas as que forem desmarcadas
+        const meta = metas.find((m) => {//m == abreviacao meta e find == encontrar
+            return m.value == resposta
+        })
+
+        meta.checked = true // marca a meta como true
+    } )
+    console.log('Meta(s) marcadas como concluida(s)')
 }
 
 
@@ -41,7 +69,7 @@ const start = async () => {// funcao assincrona
                 console.log(metas)
                 break
             case "listar":
-                console.log("")
+                await listarMetas()
                 break
             case "sair":
                 console.log("Ate a proxima!")
