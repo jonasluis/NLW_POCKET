@@ -1,6 +1,27 @@
-const start = () => {
+const { select } = require('@inquirer/prompts')//busca informacao do inquirer na pasta prompts que quer a opcao select
+
+
+const start = async () => {// funcao assincrona
     while(true){
-        let opcao = "cadastrar"
+        //await = aguardar. toda vez que tiver essa palavra dentro da funcao a funcao tem que utilizar o async
+        const opcao = await select({ //aguardar a selecao da opcao
+            message: "Menu >", // aparecer a menssagem
+            choices: [//mostra as escolhas
+                {
+                    name: "Cadastrar meta",
+                    value: "cadastrar" //define o valor da opcao
+                },
+                {
+                    name: "Listar metas",
+                    value: "listar"
+                },
+                {
+                    name: "Sair",
+                    value: "sair" //define o valor da opcao
+                }
+            ]
+        })
+
         switch(opcao){
             case "cadastrar":
                 console.log("vamos cadastrar")
@@ -9,6 +30,7 @@ const start = () => {
                 console.log("")
                 break
             case "sair":
+                console.log("Ate a proxima!")
                 return
         }
     }
