@@ -1,4 +1,17 @@
-const { select } = require('@inquirer/prompts')//busca informacao do inquirer na pasta prompts que quer a opcao select
+const { select, input } = require('@inquirer/prompts')//busca informacao do inquirer na pasta prompts que quer a opcao select
+
+let metas = [ ]
+
+const cadastrarMeta = async () => {
+    const meta = await input({ message: "Digite a meta:"})//pergunta pro usuario a meta
+
+    if(meta.length == 0){//length = tamanho 
+        console.log('A meta não pode ser vazia.')
+        return
+    }
+    // envia as informacoes para dentro da variavel metas
+    metas.push({value: meta, checked: false}) 
+}
 
 
 const start = async () => {// funcao assincrona
@@ -24,7 +37,8 @@ const start = async () => {// funcao assincrona
 
         switch(opcao){
             case "cadastrar":
-                console.log("vamos cadastrar")
+                await cadastrarMeta() //sempre que usar uma funcao assincrona usar await para esperar toda funcao cadastraMeta acontecer
+                console.log(metas)
                 break
             case "listar":
                 console.log("")
