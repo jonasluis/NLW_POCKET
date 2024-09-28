@@ -1,8 +1,21 @@
+const start = () => {
+    let count = 0
+    while(count < 10){
+        console.log(count)
+        count++
+        //return //retorna e acaba a funcao
+    }
+}
+
+start()
+
+
+/*
 // olá, mundo!
-console.log("olá, mundo!")
+//console.log("olá, mundo!")
 
 
-// variáveis - let
+variáveis - let
 let mensagens = "olá, mundo!"
 
 
@@ -46,3 +59,7 @@ const criarMeta = () => {}
 
 // named function
 function criarMetas() {}
+
+*/
+
+
