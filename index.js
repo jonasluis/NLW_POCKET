@@ -20,15 +20,16 @@ const listarMetas = async () => {
         instructions: false
     })
         
+    metas.forEach((m) =>{
+        m.checked = false // desmarca todas as respostas
+    })
 
     if(respostas.length == 0) {
         console.log("Nenhuma meta selecionada")
         return
     }
 
-    metas.forEach((m) =>{
-        m.checked = false // desmarca todas as respostas
-    })
+    
 
             //forEach == para cada resposta 
     respostas.forEach((resposta) => { // vai marcar todas que ja estavam marcadas retirando apenas as que forem desmarcadas
