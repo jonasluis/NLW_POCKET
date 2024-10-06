@@ -1,16 +1,22 @@
 const { select, input, checkbox } = require('@inquirer/prompts')//busca informacao do inquirer na pasta prompts que quer a opcao select
 
+
+let mensagem = "Bem vindo(a) ao app de metas";
 let metas = [ ]
 
 const cadastrarMeta = async () => {
     const meta = await input({ message: "Digite a meta:"})//pergunta pro usuario a meta
 
     if(meta.length == 0){//length = tamanho 
-        console.log('A meta não pode ser vazia.')
+        mensagem = 'A meta não pode ser vazia.'
         return
     }
     // envia as informacoes para dentro da variavel metas
-    metas.push({value: meta, checked: false}) 
+    metas.push(
+        {value: meta, checked: false}
+    )
+    
+    mensagem = "Meta cadastrada com sucesso!"
 }
 
 const listarMetas = async () => {
@@ -25,7 +31,7 @@ const listarMetas = async () => {
     })
 
     if(respostas.length == 0) {
-        console.log("Nenhuma meta selecionada")
+        mensagem = "Nenhuma meta selecionada"
         return
     }
 
@@ -39,7 +45,7 @@ const listarMetas = async () => {
 
         meta.checked = true // marca a meta como true
     } )
-    console.log('Meta(s) marcadas como concluida(s)')
+    mensagem = 'Meta(s) marcada(s) como concluida(s)'
 }
 
 const metasRealizadas= async () => {
@@ -47,7 +53,7 @@ const metasRealizadas= async () => {
         return meta.checked // pega as metas verdadeiras marcadas
     })
     if(realizadas.length == 0) {
-        console.log('Não existem metas realizadas! :(')
+        mensagem = 'Não existem metas realizadas! :('
         return
     }
     await select({
@@ -62,7 +68,7 @@ const metasAbertas = async () => {
     })
 
     if(abertas.length == 0){
-        console.log("Não existem metas abertas! :)")
+        mensagem = "Não existem metas abertas! :)"
         return
     }
 
@@ -86,7 +92,7 @@ const deletarMetas = async () => {
     })
 
     if(itensADeletar.length == 0){
-        console.log("Nenhuma meta para ser deletada!")
+        mensagem = "Nenhuma meta para ser deletada!"
     }
 
     itensADeletar.forEach((item) => { //cria o looping
@@ -95,12 +101,22 @@ const deletarMetas = async () => {
         })
     })
 
-    console.log("Meta(s) deletada(s) com sucesso!")
+    mensagem = "Meta(s) deletada(s) com sucesso!"
 }
 
+const mostrarMensagem = () => {
+    console.clear(); // limpa o terminal
+
+    if(mensagem != "") {
+        console.log(mensagem)
+        console.log("")
+        mensagem = ""
+    }
+}
 
 const start = async () => {// funcao assincrona
     while(true){
+        mostrarMensagem()
         //await = aguardar. toda vez que tiver essa palavra dentro da funcao a funcao tem que utilizar o async
         const opcao = await select({ //aguardar a selecao da opcao
             message: "Menu >", // aparecer a menssagem
@@ -135,7 +151,6 @@ const start = async () => {// funcao assincrona
         switch(opcao){
             case "cadastrar":
                 await cadastrarMeta() //sempre que usar uma funcao assincrona usar await para esperar toda funcao cadastraMeta acontecer
-                console.log(metas)
                 break
             case "listar":
                 await listarMetas()
