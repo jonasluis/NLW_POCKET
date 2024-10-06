@@ -1,8 +1,22 @@
 const { select, input, checkbox } = require('@inquirer/prompts')//busca informacao do inquirer na pasta prompts que quer a opcao select
-
+const fs = require("fs").promises
 
 let mensagem = "Bem vindo(a) ao app de metas";
-let metas = [ ]
+let metas
+
+const carregarMetas = async () => {
+    try{
+        const dados = await fs.readFile("metas.file", "UTF-8")// ler o arquivo especificado
+        metas = JSON.parse(dados) //transforma de json para js
+    }
+    catch(erro) {
+        metas = []
+    }
+}
+
+const salvarMetas = async () => {
+    await fs.writeFile("metas.json", JSON.stringify(metas, null, 2)) //transforma de js para json
+}
 
 const cadastrarMeta = async () => {
     const meta = await input({ message: "Digite a meta:"})//pergunta pro usuario a meta
@@ -20,6 +34,12 @@ const cadastrarMeta = async () => {
 }
 
 const listarMetas = async () => {
+
+    if(metas.length ==0){
+        mensagem = "Não existem metas!"
+        return
+    }
+
     const respostas = await checkbox({
         message: "Use as setas para mudar de meta, o espaco para marcar ou desmacar e o Enter para finalizar essa etapa",
         choices: [...metas],// ... joga tudo dentro de metas para o novo array
@@ -49,6 +69,11 @@ const listarMetas = async () => {
 }
 
 const metasRealizadas= async () => {
+    if(metas.length ==0){
+        mensagem = "Não existem metas!"
+        return
+    }
+
     const realizadas = metas.filter((meta) => {
         return meta.checked // pega as metas verdadeiras marcadas
     })
@@ -63,6 +88,11 @@ const metasRealizadas= async () => {
 }
 
 const metasAbertas = async () => {
+    if(metas.length ==0){
+        mensagem = "Não existem metas!"
+        return
+    }
+
     const abertas = metas.filter((meta) => {
         return meta.checked != true //pega as metas falsa que n estao marcadas
     })
@@ -79,6 +109,11 @@ const metasAbertas = async () => {
 }
 
 const deletarMetas = async () => {
+    if(metas.length ==0){
+        mensagem = "Não existem metas!"
+        return
+    }
+
     const metasDesmarcadas = metas.map((meta) => { // map modifica o array original
         //meta.checked = false //desmarca todas as metas
         //return meta
@@ -96,7 +131,7 @@ const deletarMetas = async () => {
     }
 
     itensADeletar.forEach((item) => { //cria o looping
-        metas.filter((meta) => { // filtra as metas
+        metas = metas.filter((meta) => { // filtra as metas
             return meta.value != item // verifica se o item eh igual ao valor da meta
         })
     })
@@ -115,8 +150,10 @@ const mostrarMensagem = () => {
 }
 
 const start = async () => {// funcao assincrona
+    await carregarMetas()
     while(true){
         mostrarMensagem()
+        await salvarMetas()
         //await = aguardar. toda vez que tiver essa palavra dentro da funcao a funcao tem que utilizar o async
         const opcao = await select({ //aguardar a selecao da opcao
             message: "Menu >", // aparecer a menssagem
