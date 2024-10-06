@@ -51,7 +51,7 @@ const metasRealizadas= async () => {
         return
     }
     await select({
-        message: "Metas Realizadas" + realizadas.length, //mostra quantidade de metas realizadas
+        message: "Metas Realizadas: " + realizadas.length, //mostra quantidade de metas realizadas
         choices: [...realizadas]
     })
 }
@@ -67,9 +67,35 @@ const metasAbertas = async () => {
     }
 
     await select({
-        message: "Metas Abertas" + abertas.length, //mostra a quantidade de metas abertas
+        message: "Metas Abertas: " + abertas.length, //mostra a quantidade de metas abertas
         choices: [...abertas]
     })
+}
+
+const deletarMetas = async () => {
+    const metasDesmarcadas = metas.map((meta) => { // map modifica o array original
+        //meta.checked = false //desmarca todas as metas
+        //return meta
+        return {value: meta.value, checked: false} //desmarca todas as metas do array 
+    })
+
+    const itensADeletar = await checkbox({
+        message: "Selecione a meta para deletar",
+        choices: [...metasDesmarcadas],// ... joga tudo dentro de metas para o novo array
+        instructions: false
+    })
+
+    if(itensADeletar.length == 0){
+        console.log("Nenhuma meta para ser deletada!")
+    }
+
+    itensADeletar.forEach((item) => { //cria o looping
+        metas.filter((meta) => { // filtra as metas
+            return meta.value != item // verifica se o item eh igual ao valor da meta
+        })
+    })
+
+    console.log("Meta(s) deletada(s) com sucesso!")
 }
 
 
@@ -96,6 +122,10 @@ const start = async () => {// funcao assincrona
                     value: "abertas"
                 },
                 {
+                    name: "Deletar metas",
+                    value: "deletar"
+                },
+                {
                     name: "Sair",
                     value: "sair" //define o valor da opcao
                 }
@@ -115,6 +145,9 @@ const start = async () => {// funcao assincrona
                 break
             case "abertas":
                 await metasAbertas()
+                break
+            case "deletar":
+                await deletarMetas()
                 break
             case "sair":
                 console.log("Ate a proxima!")
